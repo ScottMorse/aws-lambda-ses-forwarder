@@ -1,5 +1,3 @@
-/* eslint-disable @stylistic/arrow-parens */
-/* eslint-disable @stylistic/indent */
 import { S3Client, CopyObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
@@ -370,5 +368,5 @@ const promiseSeries = (promises, initValue) =>
         throw new Error("Error: Invalid promise item: " + promise);
       });
     }
-    return chain.then((data) => data && data.done ? data : promise(data));
+    return chain.then(data => data && data.done ? data : promise(data));
   }, Promise.resolve(initValue));
