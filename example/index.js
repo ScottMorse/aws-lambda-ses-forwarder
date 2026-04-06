@@ -1,8 +1,8 @@
-var LambdaForwarder = require("aws-lambda-ses-forwarder");
+import { handler as forwarderHandler } from "aws-lambda-ses-forwarder";
 
-exports.handler = function(event, context, callback) {
+export const handler = async (event, context) => {
   // See aws-lambda-ses-forwarder/index.js for all options.
-  var overrides = {
+  const overrides = {
     config: {
       fromEmail: "noreply@example.com",
       emailBucket: "s3-bucket-name",
@@ -18,5 +18,5 @@ exports.handler = function(event, context, callback) {
       }
     }
   };
-  LambdaForwarder.handler(event, context, callback, overrides);
+  return forwarderHandler(event, context, overrides);
 };
