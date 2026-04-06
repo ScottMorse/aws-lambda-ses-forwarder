@@ -1,9 +1,8 @@
-"use strict";
+import { S3Client, CopyObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { version } from "./package.json" with { type: "json" };
 
-const { S3Client, CopyObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
-
-console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.1.0");
+console.log(`AWS Lambda SES Forwarder // @arithmetric // Version ${version}`);
 
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
@@ -36,7 +35,7 @@ console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.1.0");
 //   and domain part of an email address (i.e. `info`).
 //
 //   To match all email addresses matching no other mapping, use "@" as a key.
-var defaultConfig = {
+const defaultConfig = {
   fromEmail: "noreply@example.com",
   subjectPrefix: "",
   emailBucket: "s3-bucket-name",
@@ -66,7 +65,7 @@ var defaultConfig = {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.parseEvent = function(data) {
+export const parseEvent = function(data) {
   // Validate characteristics of a SES event record.
   if (!data.event ||
     !Object.hasOwn(data.event, 'Records') ||
@@ -93,11 +92,11 @@ exports.parseEvent = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.transformRecipients = function(data) {
-  var newRecipients = [];
+export const transformRecipients = function(data) {
+  let newRecipients = [];
   data.originalRecipients = data.recipients;
   data.recipients.forEach(function(origEmail) {
-    var origEmailKey = origEmail.toLowerCase();
+    let origEmailKey = origEmail.toLowerCase();
     if (data.config.allowPlusSign) {
       origEmailKey = origEmailKey.replace(/\+.*?@/, '@');
     }
@@ -106,9 +105,9 @@ exports.transformRecipients = function(data) {
         data.config.forwardMapping[origEmailKey]);
       data.originalRecipient = origEmail;
     } else {
-      var origEmailDomain;
-      var origEmailUser;
-      var pos = origEmailKey.lastIndexOf("@");
+      let origEmailDomain;
+      let origEmailUser;
+      let pos = origEmailKey.lastIndexOf("@");
       if (pos === -1) {
         origEmailUser = origEmailKey;
       } else {
@@ -153,7 +152,7 @@ exports.transformRecipients = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.fetchMessage = function(data) {
+export const fetchMessage = function(data) {
   // Copying email object to ensure read permission
   data.log({
     level: "info",
@@ -211,15 +210,15 @@ exports.fetchMessage = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.processMessage = function(data) {
-  var match = data.emailData.match(/^((?:.+\r?\n)*)(\r?\n(?:.*\s+)*)/m);
-  var header = match && match[1] ? match[1] : data.emailData;
-  var body = match && match[2] ? match[2] : '';
+export const processMessage = function(data) {
+  let match = data.emailData.match(/^((?:.+\r?\n)*)(\r?\n(?:.*\s+)*)/m);
+  let header = match && match[1] ? match[1] : data.emailData;
+  let body = match && match[2] ? match[2] : '';
 
   // Add "Reply-To:" with the "From" address if it doesn't already exists
   if (!/^reply-to:[\t ]?/mi.test(header)) {
     match = header.match(/^from:[\t ]?(.*(?:\r?\n\s+.*)*\r?\n)/mi);
-    var from = match && match[1] ? match[1] : '';
+    let from = match && match[1] ? match[1] : '';
     if (from) {
       header = header + 'Reply-To: ' + from;
       data.log({
@@ -241,7 +240,7 @@ exports.processMessage = function(data) {
   header = header.replace(
     /^from:[\t ]?(.*(?:\r?\n\s+.*)*)/mgi,
     function(match, from) {
-      var fromText;
+      let fromText;
       if (data.config.fromEmail) {
         fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
         ' <' + data.config.fromEmail + '>';
@@ -292,8 +291,8 @@ exports.processMessage = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.sendMessage = function(data) {
-  var params = {
+export const sendMessage = function(data) {
+  const params = {
     Destination: { ToAddresses: data.recipients },
     Source: data.originalRecipient,
     Content: { Raw: { Data: Buffer.from(data.emailData) } },
@@ -335,16 +334,16 @@ exports.sendMessage = function(data) {
  * @param {object} overrides - Overrides for the default data, including the
  * configuration, SES object, and S3 object.
  */
-exports.handler = function(event, context, callback, overrides) {
-  var steps = overrides && overrides.steps ? overrides.steps :
+export const handler = function(event, context, callback, overrides) {
+  const steps = overrides && overrides.steps ? overrides.steps :
       [
-        exports.parseEvent,
-        exports.transformRecipients,
-        exports.fetchMessage,
-        exports.processMessage,
-        exports.sendMessage
+        parseEvent,
+        transformRecipients,
+        fetchMessage,
+        processMessage,
+        sendMessage
       ];
-  var data = {
+  const data = {
     event: event,
     callback: callback,
     context: context,
