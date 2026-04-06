@@ -243,10 +243,10 @@ export const processMessage = function(data) {
       let fromText;
       if (data.config.fromEmail) {
         fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
-        ' <' + data.config.fromEmail + '>';
+          ' <' + data.config.fromEmail + '>';
       } else {
         fromText = 'From: ' + from.replace('<', 'at ').replace('>', '') +
-        ' <' + data.originalRecipient + '>';
+          ' <' + data.originalRecipient + '>';
       }
       return fromText;
     });
