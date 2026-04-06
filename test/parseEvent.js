@@ -5,40 +5,33 @@ import fs from "fs";
 
 import * as index from "../index.js";
 
-describe('index.js', function() {
-  describe('#parseEvent()', function() {
-    it('should parse email and recipients from an SES event', function(done) {
-      var data = {
+describe('index.js', () => {
+  describe('#parseEvent()', () => {
+    it('should parse email and recipients from an SES event', async () => {
+      const data = {
         event: JSON.parse(fs.readFileSync("test/assets/event.json")),
         log: console.log,
         context: {}
       };
-      index.parseEvent(data)
-        .then(function(data) {
-          assert.equal(data.email.messageId,
-            "o3vrnil0e2ic28trm7dakrc2v0clambda4nbp0g1",
-            "parseEvent found messageId");
-          assert.equal(data.email.source,
-            "janedoe@example.com",
-            "parseEvent found message source");
-          assert.equal(data.recipients[0],
-            "info@example.com",
-            "parseEvent found message recipients");
-          done();
-        });
+      const result = await index.parseEvent(data);
+      assert.equal(result.email.messageId,
+        "o3vrnil0e2ic28trm7dakrc2v0clambda4nbp0g1",
+        "parseEvent found messageId");
+      assert.equal(result.email.source,
+        "janedoe@example.com",
+        "parseEvent found message source");
+      assert.equal(result.recipients[0],
+        "info@example.com",
+        "parseEvent found message recipients");
     });
 
-    it('should reject an invalid SES event', function(done) {
-      var data = {
+    it('should reject an invalid SES event', async () => {
+      const data = {
         event: {},
         log: console.log,
         context: {}
       };
-      index.parseEvent(data)
-        .catch(function(err) {
-          assert.ok(err, "parseEvent threw an error");
-          done();
-        });
+      await assert.rejects(index.parseEvent(data), "parseEvent threw an error");
     });
   });
 });

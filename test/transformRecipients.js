@@ -4,218 +4,162 @@ import assert from "assert";
 
 import * as index from "../index.js";
 
-describe('index.js', function() {
-  describe('#transformRecipients()', function() {
-    it('should transform recipients according to the provided mapping',
-      function(done) {
-        var data = {
-          recipients: ["info@example.com"],
-          config: {
-            forwardMapping: {
-              "info@example.com": [
-                "jim@example.com",
-                "jane@example.com"
-              ]
-            }
-          },
-          log: console.log
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
+describe('index.js', () => {
+  describe('#transformRecipients()', () => {
+    it('should transform recipients according to the provided mapping', async () => {
+      const data = {
+        recipients: ["info@example.com"],
+        config: {
+          forwardMapping: {
+            "info@example.com": [
               "jim@example.com",
-              "parseEvent made 1/2 substitutions");
-            assert.equal(data.recipients[1],
-              "jane@example.com",
-              "parseEvent made 2/2 substitutions");
-            done();
-          });
-      });
-
-    it('should transform recipients in a case insensitive way',
-      function(done) {
-        var data = {
-          recipients: ["INFO@EXAMPLE.COM"],
-          config: {
-            forwardMapping: {
-              "info@example.com": [
-                "jim@example.com",
-                "jane@example.com"
-              ]
-            }
-          },
-          log: console.log
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
-              "jim@example.com",
-              "parseEvent made 1/2 substitutions");
-            assert.equal(data.recipients[1],
-              "jane@example.com",
-              "parseEvent made 2/2 substitutions");
-            done();
-          });
-      });
-
-    it('should transform recipients according to a domain wildcard mapping',
-      function(done) {
-        var data = {
-          recipients: ["info@EXAMPLE.com"],
-          config: {
-            forwardMapping: {
-              "@example.com": [
-                "jim@example.com",
-                "jane@example.com"
-              ]
-            },
-            log: console.log
+              "jane@example.com"
+            ]
           }
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
-              "jim@example.com",
-              "parseEvent made 1/2 substitutions");
-            assert.equal(data.recipients[1],
-              "jane@example.com",
-              "parseEvent made 2/2 substitutions");
-            done();
-          });
-      });
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made 1/2 substitutions");
+      assert.equal(result.recipients[1], "jane@example.com", "parseEvent made 2/2 substitutions");
+    });
 
-    it('should transform recipients according to a user wildcard mapping',
-      function(done) {
-        var data = {
-          recipients: ["info@foo.com"],
-          config: {
-            forwardMapping: {
-              info: [
-                "jim@example.com",
-                "jane@example.com"
-              ]
-            },
-            log: console.log
+    it('should transform recipients in a case insensitive way', async () => {
+      const data = {
+        recipients: ["INFO@EXAMPLE.COM"],
+        config: {
+          forwardMapping: {
+            "info@example.com": [
+              "jim@example.com",
+              "jane@example.com"
+            ]
           }
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made 1/2 substitutions");
+      assert.equal(result.recipients[1], "jane@example.com", "parseEvent made 2/2 substitutions");
+    });
+
+    it('should transform recipients according to a domain wildcard mapping', async () => {
+      const data = {
+        recipients: ["info@EXAMPLE.com"],
+        config: {
+          forwardMapping: {
+            "@example.com": [
               "jim@example.com",
-              "parseEvent made 1/2 substitutions");
-            assert.equal(data.recipients[1],
-              "jane@example.com",
-              "parseEvent made 2/2 substitutions");
-            done();
-          });
-      });
-
-    it('should exit if there are no new recipients',
-      function(done) {
-        var data = {
-          recipients: ["noreply@example.com"],
-          config: {
-            forwardMapping: {
-              "info@example.com": [
-                "jim@example.com"
-              ]
-            }
-          },
-          callback: function() {
-            done();
+              "jane@example.com"
+            ]
           },
           log: console.log
-        };
-        index.transformRecipients(data);
-      });
+        }
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made 1/2 substitutions");
+      assert.equal(result.recipients[1], "jane@example.com", "parseEvent made 2/2 substitutions");
+    });
 
-    it('should support matching a name without domain',
-      function(done) {
-        var data = {
-          recipients: ["info"],
-          config: {
-            forwardMapping: {
-              info: [
-                "jim@example.com"
-              ]
-            }
-          },
-          log: console.log
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
+    it('should transform recipients according to a user wildcard mapping', async () => {
+      const data = {
+        recipients: ["info@foo.com"],
+        config: {
+          forwardMapping: {
+            info: [
               "jim@example.com",
-              "parseEvent made substitution");
-            done();
-          });
-      });
-
-    it('should exit if the recipient is malformed',
-      function(done) {
-        var data = {
-          recipients: ["example.com"],
-          config: {
-            forwardMapping: {
-              "@example.com": [
-                "jim@example.com"
-              ]
-            }
-          },
-          callback: function() {
-            done();
+              "jane@example.com"
+            ]
           },
           log: console.log
-        };
-        index.transformRecipients(data);
-      });
+        }
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made 1/2 substitutions");
+      assert.equal(result.recipients[1], "jane@example.com", "parseEvent made 2/2 substitutions");
+    });
 
-    it('should match plus sign email',
-      function(done) {
-        var data = {
-          recipients: ["info+testing@foo.com"],
-          config: {
-            forwardMapping: {
-              "info@foo.com": [
-                "jim@example.com"
-              ]
-            },
-            allowPlusSign: true
-          },
-          log: console.log
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
-              "jim@example.com",
-              "parseEvent made substitution");
-            done();
-          });
-      });
+    it('should exit if there are no new recipients', async () => {
+      const data = {
+        recipients: ["noreply@example.com"],
+        config: {
+          forwardMapping: {
+            "info@example.com": [
+              "jim@example.com"
+            ]
+          }
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.ok(result.done, "transformRecipients set done flag");
+    });
 
-    it('should support matching with catch all',
-      function(done) {
-        var data = {
-          recipients: ["info@example.com"],
-          config: {
-            forwardMapping: {
-              "no-match@example.com": [
-                "jim@example.com"
-              ],
-              "@": [
-                "catch-all@example.com"
-              ]
-            }
+    it('should support matching a name without domain', async () => {
+      const data = {
+        recipients: ["info"],
+        config: {
+          forwardMapping: {
+            info: [
+              "jim@example.com"
+            ]
+          }
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made substitution");
+    });
+
+    it('should exit if the recipient is malformed', async () => {
+      const data = {
+        recipients: ["example.com"],
+        config: {
+          forwardMapping: {
+            "@example.com": [
+              "jim@example.com"
+            ]
+          }
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.ok(result.done, "transformRecipients set done flag");
+    });
+
+    it('should match plus sign email', async () => {
+      const data = {
+        recipients: ["info+testing@foo.com"],
+        config: {
+          forwardMapping: {
+            "info@foo.com": [
+              "jim@example.com"
+            ]
           },
-          log: console.log
-        };
-        index.transformRecipients(data)
-          .then(function(data) {
-            assert.equal(data.recipients[0],
-              "catch-all@example.com",
-              "parseEvent made substitution");
-            done();
-          });
-      });
+          allowPlusSign: true
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "jim@example.com", "parseEvent made substitution");
+    });
+
+    it('should support matching with catch all', async () => {
+      const data = {
+        recipients: ["info@example.com"],
+        config: {
+          forwardMapping: {
+            "no-match@example.com": [
+              "jim@example.com"
+            ],
+            "@": [
+              "catch-all@example.com"
+            ]
+          }
+        },
+        log: console.log
+      };
+      const result = await index.transformRecipients(data);
+      assert.equal(result.recipients[0], "catch-all@example.com", "parseEvent made substitution");
+    });
   });
 });

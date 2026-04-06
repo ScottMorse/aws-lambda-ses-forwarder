@@ -7,96 +7,70 @@ import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 
 import * as index from "../index.js";
 
-describe('index.js', function() {
-  describe('#handler()', function() {
-    it('mock data should result in a success', function(done) {
-      var event = JSON.parse(fs.readFileSync("test/assets/event.json"));
-      var context = {};
-      var callback = function() {
-        done();
-      };
-      var overrides = {
+describe('index.js', () => {
+  describe('#handler()', () => {
+    it('mock data should result in a success', async () => {
+      const event = JSON.parse(fs.readFileSync("test/assets/event.json"));
+      const context = {};
+      const overrides = {
         s3: {
-          send: function(options, callback) {
+          send: (options) => {
             if (options instanceof CopyObjectCommand)
-              callback(null);
+              return Promise.resolve();
             else if (options instanceof GetObjectCommand)
-              callback(null, {
-                Body: {
-                  transformToString: function() {
-                    return "email data";
-                  }
-                }
+              return Promise.resolve({
+                Body: { transformToString: () => "email data" }
               });
           }
         },
         ses: {
-          send: function(options, callback) {
-            callback(null, {status: "ok"});
-          }
+          send: () => Promise.resolve({status: "ok"})
         },
         config: {
           emailBucket: "bucket",
           emailKeyPrefix: "prefix/",
           forwardMapping: {
-            "info@example.com": [
-              "jim@example.com"
-            ]
+            "info@example.com": ["jim@example.com"]
           }
         }
       };
-      index.handler(event, context, callback, overrides);
+      await index.handler(event, context, overrides);
     });
 
-    it('should accept functions as steps', function(done) {
-      var event = {};
-      var context = {};
-      var callback = function() {};
-      var overrides = {
+    it('should accept functions as steps', (done) => {
+      const event = {};
+      const context = {};
+      const overrides = {
         steps: [
-          function(data) {
-            if (data && data.context) {
-              done();
-            }
+          (data) => {
+            if (data && data.context) done();
           }
         ]
       };
-      index.handler(event, context, callback, overrides);
+      index.handler(event, context, overrides);
     });
 
-    it('should report failure for invalid steps', function(done) {
-      var event = {};
-      var context = {};
-      var callback = function(err) {
-        if (err) assert.ok(true, "callback function received error");
-        done();
+    it('should report failure for invalid steps', async () => {
+      const event = {};
+      const context = {};
+      const overrides = {
+        steps: [1, ['test']]
       };
-      var overrides = {
-        steps: [
-          1,
-          ['test']
-        ]
-      };
-      index.handler(event, context, callback, overrides);
+      await assert.rejects(index.handler(event, context, overrides));
     });
 
-    it('should report failure for steps passing an error', function(done) {
-      var event = {};
-      var context = {};
-      var callback = function(err) {
-        done(err ? null : true);
-      };
-      var overrides = {
+    it('should report failure for steps returning a rejection', async () => {
+      const event = {};
+      const context = {};
+      let logCalled = false;
+      const overrides = {
         steps: [
-          function(data, next) {
-            next(true, data);
-          }
+          () => Promise.reject(new Error("test error"))
         ],
-        log: function() {
-          assert.ok(true, "custom log function called successfully");
-        }
+        log: () => { logCalled = true; }
       };
-      index.handler(event, context, callback, overrides);
+      await assert.rejects(index.handler(event, context, overrides));
+      assert.ok(logCalled, "custom log function called successfully");
     });
   });
 });
