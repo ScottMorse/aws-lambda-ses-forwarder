@@ -3,7 +3,7 @@
 import assert from "assert";
 import fs from "fs";
 
-import * as index from "../index";
+import * as index from "../index.js";
 
 describe('index.js', function() {
   describe('#processMessage()', function() {

@@ -3,7 +3,7 @@
 import assert from "assert";
 
 import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
-import * as index from "../index";
+import * as index from "../index.js";
 
 describe('index.js', function() {
   describe('#fetchMessage()', function() {

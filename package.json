@@ -5,9 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "check-coverage": "nyc report --reporter=lcov",
+    "check-coverage": "c8 report --reporter=lcov && c8 check-coverage --statements 100",
     "lint": "npx eslint",
-    "test": "nyc --statements 100 -- mocha -- --check-leaks"
+    "test": "c8 mocha --check-leaks"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1024.0",
@@ -17,9 +17,9 @@
     "@eslint/js": "^9.18.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@stylistic/eslint-plugin-js": "^2.12.1",
+    "c8": "^11.0.0",
     "globals": "^15.14.0",
-    "mocha": "^11.1.0",
-    "nyc": "^17.1.0"
+    "mocha": "^11.1.0"
   },
   "engines": {
     "node": ">=18.0"

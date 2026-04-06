@@ -3,9 +3,9 @@
 import assert from "assert";
 import fs from "fs";
 
-const {GetObjectCommand, CopyObjectCommand} = require("@aws-sdk/client-s3");
+import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 
-import * as index from "../index";
+import * as index from "../index.js";
 
 describe('index.js', function() {
   describe('#handler()', function() {

@@ -2,7 +2,7 @@
 
 import assert from "assert";
 
-import * as index from "../index";
+import * as index from "../index.js";
 
 describe('index.js', function() {
   describe('#sendMessage()', function() {
