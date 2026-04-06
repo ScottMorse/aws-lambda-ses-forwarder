@@ -1,8 +1,8 @@
 import { S3Client, CopyObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
-import { version } from "./package.json" with { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 
-console.log(`AWS Lambda SES Forwarder // @arithmetric // Version ${version}`);
+console.log(`AWS Lambda SES Forwarder // @arithmetric // Version ${packageJson.version}`);
 
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
