@@ -1,11 +1,11 @@
 /* global describe, it */
 
-var assert = require("assert");
-var fs = require("fs");
+import assert from "assert";
+import fs from "fs";
 
-const {GetObjectCommand, CopyObjectCommand} = require('@aws-sdk/client-s3');
+const {GetObjectCommand, CopyObjectCommand} = require("@aws-sdk/client-s3");
 
-var index = require("../index");
+import * as index from "../index";
 
 describe('index.js', function() {
   describe('#handler()', function() {

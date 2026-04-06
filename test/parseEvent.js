@@ -1,9 +1,9 @@
 /* global describe, it */
 
-var assert = require("assert");
-var fs = require("fs");
+import assert from "assert";
+import fs from "fs";
 
-var index = require("../index");
+import * as index from "../index";
 
 describe('index.js', function() {
   describe('#parseEvent()', function() {

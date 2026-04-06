@@ -1,10 +1,9 @@
 /* global describe, it */
 
-var assert = require("assert");
+import assert from "assert";
 
-const {GetObjectCommand, CopyObjectCommand} = require('@aws-sdk/client-s3');
-
-var index = require("../index");
+import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
+import * as index from "../index";
 
 describe('index.js', function() {
   describe('#fetchMessage()', function() {

@@ -1,8 +1,8 @@
 /* global describe, it */
 
-var assert = require("assert");
+import assert from "assert";
 
-var index = require("../index");
+import * as index from "../index";
 
 describe('index.js', function() {
   describe('#transformRecipients()', function() {
