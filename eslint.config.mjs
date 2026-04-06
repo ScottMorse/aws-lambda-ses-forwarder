@@ -17,7 +17,7 @@ export default [
       globals: {
         ...globals.node,
       },
-      sourceType: "commonjs",
+      sourceType: "module",
     },
     plugins: {
       "@stylistic/js": stylisticJs,
