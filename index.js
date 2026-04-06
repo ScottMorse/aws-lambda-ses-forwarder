@@ -3,13 +3,7 @@
 import { S3Client, CopyObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
-import("./package.json", { with: { type: "json" } })
-  .then((packageJson) => {
-    console.log(`AWS Lambda SES Forwarder // @arithmetric // Version ${packageJson.default.version}`);
-  })
-  .catch(() => {
-    console.log(`AWS Lambda SES Forwarder // @arithmetric // Version unknown`);
-  });
+console.log("AWS Lambda SES Forwarder // @arithmetric // Version 6.0.0");
 
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
@@ -327,31 +321,28 @@ export const sendMessage = async (data) => {
 };
 
 /**
- * Handler function to be invoked by AWS Lambda with an inbound SES email as
- * the event.
+ * Creates a Lambda handler function for forwarding inbound SES emails.
  *
- * @param {object} event - Lambda event from inbound email received by AWS SES.
- * @param {object} context - Lambda context object.
  * @param {object} overrides - Overrides for the default data, including the
  * configuration, SES object, and S3 object.
+ *
+ * @return {function} - Async Lambda handler function.
  */
-export const handler = async (event, context, overrides) => {
-  const steps = overrides && overrides.steps ? overrides.steps :
-    [
-      parseEvent,
-      transformRecipients,
-      fetchMessage,
-      processMessage,
-      sendMessage
-    ];
+export const createHandler = (overrides = {}) => async (event, context) => {
+  const steps = overrides.steps ?? [
+    parseEvent,
+    transformRecipients,
+    fetchMessage,
+    processMessage,
+    sendMessage
+  ];
   const data = {
     event: event,
     context: context,
-    config: overrides && overrides.config ? overrides.config : defaultConfig,
-    log: overrides && overrides.log ? overrides.log : console.log,
-    ses: overrides && overrides.ses ? overrides.ses : new SESv2Client(),
-    s3: overrides && overrides.s3 ?
-      overrides.s3 : new S3Client({signatureVersion: 'v4'})
+    config: overrides.config ?? defaultConfig,
+    log: overrides.log ?? console.log,
+    ses: overrides.ses ?? new SESv2Client(),
+    s3: overrides.s3 ?? new S3Client({signatureVersion: 'v4'})
   };
   try {
     await promiseSeries(steps, data);
@@ -369,6 +360,8 @@ export const handler = async (event, context, overrides) => {
     throw new Error("Error: Step returned error.");
   }
 };
+
+export const handler = createHandler();
 
 const promiseSeries = (promises, initValue) =>
   promises.reduce((chain, promise) => {
