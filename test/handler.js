@@ -8,7 +8,7 @@ import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 import * as index from "../index.js";
 
 describe('index.js', () => {
-  describe('#handler()', () => {
+  describe('#createHandler()', () => {
     it('mock data should result in a success', async () => {
       const event = JSON.parse(fs.readFileSync("test/assets/event.json"));
       const context = {};
@@ -34,7 +34,7 @@ describe('index.js', () => {
           }
         }
       };
-      await index.handler(event, context, overrides);
+      await index.createHandler(overrides)(event, context);
     });
 
     it('should accept functions as steps', (done) => {
@@ -47,7 +47,7 @@ describe('index.js', () => {
           }
         ]
       };
-      index.handler(event, context, overrides);
+      index.createHandler(overrides)(event, context);
     });
 
     it('should report failure for invalid steps', async () => {
@@ -56,7 +56,7 @@ describe('index.js', () => {
       const overrides = {
         steps: [1, ['test']]
       };
-      await assert.rejects(index.handler(event, context, overrides));
+      await assert.rejects(index.createHandler(overrides)(event, context));
     });
 
     it('should report failure for steps returning a rejection', async () => {
@@ -69,7 +69,7 @@ describe('index.js', () => {
         ],
         log: () => { logCalled = true; }
       };
-      await assert.rejects(index.handler(event, context, overrides));
+      await assert.rejects(index.createHandler(overrides)(event, context));
       assert.ok(logCalled, "custom log function called successfully");
     });
   });
