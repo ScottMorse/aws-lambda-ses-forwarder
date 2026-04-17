@@ -3,7 +3,7 @@
   "version": "6.0.0",
   "description": "Serverless email forwarding using AWS Lambda and SES",
   "type": "module",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "check-coverage": "c8 report --reporter=lcov && c8 check-coverage --statements 100",
     "lint": "npx eslint",
