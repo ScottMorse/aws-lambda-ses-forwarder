@@ -12,7 +12,7 @@ export default [
     commaDangle: "only-multiline",
   }),
   {
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.mjs"],
     languageOptions: {
       globals: {
         ...globals.node,
