@@ -3,9 +3,9 @@
 import assert from "assert";
 import fs from "fs";
 
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#processMessage()', () => {
     it('should process email data and make updates', async () => {
       const data = {

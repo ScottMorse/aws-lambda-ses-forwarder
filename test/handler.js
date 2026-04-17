@@ -5,9 +5,9 @@ import fs from "fs";
 
 import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#createHandler()', () => {
     it('mock data should result in a success', async () => {
       const event = JSON.parse(fs.readFileSync("test/assets/event.json"));

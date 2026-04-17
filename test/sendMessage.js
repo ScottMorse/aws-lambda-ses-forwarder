@@ -2,9 +2,9 @@
 
 import assert from "assert";
 
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#sendMessage()', () => {
     it('should invoke the AWS SES SDK to send the message', async () => {
       const data = {

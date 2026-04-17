@@ -2,9 +2,9 @@
 
 import assert from "assert";
 
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#transformRecipients()', () => {
     it('should transform recipients according to the provided mapping', async () => {
       const data = {

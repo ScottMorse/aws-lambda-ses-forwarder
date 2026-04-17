@@ -3,9 +3,9 @@
 import assert from "assert";
 
 import { GetObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#fetchMessage()', () => {
     it('should invoke the AWS S3 SDK to fetch the message', async () => {
       const data = {

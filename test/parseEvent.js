@@ -3,9 +3,9 @@
 import assert from "assert";
 import fs from "fs";
 
-import * as index from "../index.js";
+import * as index from "../index.mjs";
 
-describe('index.js', () => {
+describe('index.mjs', () => {
   describe('#parseEvent()', () => {
     it('should parse email and recipients from an SES event', async () => {
       const data = {
