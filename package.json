@@ -6,7 +6,7 @@
   "main": "index.mjs",
   "scripts": {
     "check-coverage": "c8 report --reporter=lcov && c8 check-coverage --statements 100",
-    "lint": "npx eslint",
+    "lint": "npx eslint@^9.18.0",
     "test": "c8 mocha --check-leaks"
   },
   "dependencies": {
