@@ -50,7 +50,7 @@ http://docs.aws.amazon.com/ses/latest/DeveloperGuide/limits.html
 
 ## Set Up
 
-1. Modify the values in the `config` object at the top of `index.js` to specify
+1. Modify the values in the `config` object at the top of `index.mjs` to specify
 the S3 bucket and object prefix for locating emails stored by SES. Also provide
 the email forwarding mapping from original destinations to new destination.
 
@@ -60,7 +60,7 @@ the email forwarding mapping from original destinations to new destination.
  Runtime is set to Node.js 22.x. (Node.js 18.x and 20.x can also be used.)
 
  - For the Lambda function code, either copy and paste the contents of
- `index.js` into the inline code editor or zip the contents of the repository
+ `index.mjs` into the inline code editor or zip the contents of the repository
  and upload them directly or via S3.
 
  - Ensure Handler is set to `index.handler`.
@@ -180,7 +180,7 @@ email forwarding.
 - `log`: A function that accepts log messages for reporting. By default, this is
 set to `console.log`.
 - `steps`: An array of functions that should be executed to process and forward
-the email. See `index.js` for the default set of steps.
+the email. See `index.mjs` for the default set of steps.
 
 See [example](https://github.com/arithmetric/aws-lambda-ses-forwarder/tree/master/example)
 for how to provide configuration as overrides.

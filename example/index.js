@@ -1,6 +1,6 @@
 import { createHandler } from "aws-lambda-ses-forwarder";
 
-// See aws-lambda-ses-forwarder/index.js for all options.
+// See aws-lambda-ses-forwarder/index.mjs for all options.
 export const handler = createHandler({
   config: {
     fromEmail: "noreply@example.com",
