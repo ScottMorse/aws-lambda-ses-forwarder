@@ -6,7 +6,7 @@
   "main": "index.mjs",
   "scripts": {
     "check-coverage": "c8 report --reporter=lcov && c8 check-coverage --statements 100",
-    "lint": "npx eslint@^9.18.0",
+    "lint": "npx eslint",
     "test": "c8 mocha --check-leaks"
   },
   "dependencies": {
@@ -14,10 +14,10 @@
     "@aws-sdk/client-sesv2": "^3.1024.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@stylistic/eslint-plugin-js": "^2.12.1",
     "c8": "^11.0.0",
+    "eslint": "^9.18.0",
     "globals": "^15.14.0",
     "mocha": "^11.1.0"
   },
